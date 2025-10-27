@@ -1,0 +1,77 @@
+FUNCTION INCLUIR()
+
+    LOCAL cNomeAntigo  := SELECT()  // Salva a área de trabalho atual
+    LOCAL nUltimoCodigo
+    LOCAL nLinha := 0 // Variável auxiliar para posicionamento na tela
+    LOCAL cNome := SPACE(40)
+    LOCAL nPreco := 0.00
+
+    // Abre a área de trabalho PRODUTOS e bloqueia o arquivo para inclusão
+    SELECT PRODUTOS
+    DbUseArea( .F., "DBFCDX", "PRODUTOS", "PRODUTOS", .F. ) // Reabrir em modo de uso, apenas por segurança
+
+    // Pega o próximo código sequencial
+    DbGoTop()
+    IF LastRec() > 0
+        // Encontra o maior código e adiciona 1. (Assumindo que o código é um campo sequencial)
+        nUltimoCodigo := DbMax( "CODIGO" ) + 1
+    ELSE
+        nUltimoCodigo := 1
+    ENDIF
+
+    // Adiciona um registro em branco no final do arquivo
+    APPEND BLANK
+
+    // Bloqueia o registro em branco para evitar conflitos em rede
+    RLock()
+
+    // Limpa a área da tela para a entrada de dados (janela de inclusão)
+    @ 03, 00 CLEAR TO 22, 79
+
+    @ (nLinha := nLinha + 1)+3, 10 SAY Replicate("*", 60)
+    @ (nLinha := nLinha + 1)+3, 10 SAY PadC(" INCLUSÃO DE NOVO PRODUTO ", 60) COLOR "W+/B"
+    @ (nLinha := nLinha + 1)+3, 10 SAY Replicate("*", 60)
+
+    // Campo Código (Somente Visualização)
+    @ (nLinha := nLinha + 1)+3, 15 SAY "Código:"
+    @   Row(), Col() + 1 GET nUltimoCodigo PICTURE "99999" READONLY
+
+    // Campo Nome
+    @ (nLinha := nLinha + 1)+3, 15 SAY "Nome:"
+    @   Row(), Col() + 1 GET cNome PICT "@!" // @! = Converte para maiúsculas
+
+    // Campo Preço
+    @ (nLinha := nLinha + 1)+3, 15 SAY "Preço (R$):"
+    @   Row(), Col() + 1 GET nPreco PICT "999,999.99"
+
+    READ // Aguarda a entrada de dados do usuário
+
+    // Verifica se o usuário pressionou ESC (Key: 27)
+    IF LastKey() == K_ESC
+        MsgAlert("Inclusão Cancelada!", "Atenção")
+        // Desbloqueia e remove o registro em branco
+        UNLock
+        DELETE
+    ELSE
+        // Preenche os campos do registro
+        REPLACE PRODUTOS->CODIGO WITH nUltimoCodigo
+        REPLACE PRODUTOS->NOME   WITH cNome
+        REPLACE PRODUTOS->PRECO  WITH nPreco
+
+        // Salva as alterações
+        DbCommit()
+        UNLock // Libera o registro
+
+        MsgInfo("Produto Código: " + LTrim(Str(nUltimoCodigo)) + " incluído com sucesso!", "Sucesso")
+    ENDIF
+
+    // Retorna para a área de trabalho que estava ativa (se houver)
+    IF ! Empty(cNomeAntigo)
+       SELECT (cNomeAntigo)
+    ENDIF
+
+    // Reabre o DBF para o DBEdit na Main() poder atualizar
+    DbCloseArea()
+    USE PRODUTOS INDEX NOME NEW ALIAS PRODUTOS // Reabre o arquivo e índice
+
+RETURN NIL

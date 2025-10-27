@@ -1,0 +1,44 @@
+FUNCTION Produto_Ini()
+
+   // Definição da Estrutura da Tabela:
+   // {Nome do Campo, Tipo, Tamanho, Decimais}
+   LOCAL aStru := { ;
+                    {"CODIGO",   "N", 5, 0}, ;     // Número (5 dígitos, 0 decimais)
+                    {"NOME",     "C", 50, 0}, ;    // Caractere (50)
+                    {"PRECO",    "N", 6, 2}, ;     // Número (6 dígitos, 2 decimais: ex: 999.99)
+                    {"CADASTRO", "D", 8, 0}, ;     // Data (8)
+                    {"INATIVO",  "L", 1, 0} ;      // Lógico (1)
+                  }
+
+   // --- 1. CRIAÇÃO DO ARQUIVO DBF (SE NÃO EXISTE) ---
+   IF ! FILE( cDbfNome )
+      IF ! DBCREATE( cDbfNome, aStru, "DBFNTX" ) // Cria o DBF usando o RDD nativo DBFNTX
+         ALERT( "Erro ao criar o arquivo " + cDbfNome )
+         RETURN .F. // Falha na inicialização
+      ENDIF
+   ENDIF
+
+   // --- 2. ABERTURA DA ÁREA DE TRABALHO ---
+   SELECT 1 // Seleciona a área de trabalho 1
+   // DBUSEAREA( Compartilhado, RDD, Nome do DBF, Alias, Somente leitura )
+   DBUSEAREA( .T., "DBFNTX", cDbfNome, cAlias, .F. )
+
+   // --- 3. CRIAÇÃO E ABERTURA DO ÍNDICE (Ordem Alfabética) ---
+
+   // Cria o índice por NOME se ele não existir
+   IF ! FILE( cIdxNome )
+      // Cria índice por NOME. A expressão {|| PRODUTOS->NOME} garante a ordenação.
+      DBCREATEINDEX( cIdxNome, "NOME", {|| &(cAlias + "->NOME")} )
+   ENDIF
+
+   // Ativa o índice para ordenação da área de trabalho
+   ORDSETFOCUS( cIdxNome )
+
+   RETURN .T. // Sucesso na inicialização/*
+ * Project: Crud
+ * File: Module1.prg
+ * Description:
+ * Author:
+ * Date: 10-27-2025
+ */
+

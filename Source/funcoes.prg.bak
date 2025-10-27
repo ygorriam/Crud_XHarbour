@@ -1,0 +1,106 @@
+PROCEDURE AbrirTabela()
+   IF !File("clientes.dbf")
+      DbCreate("clientes", { ;
+         {"COD", "N", 5, 0}, ;
+         {"NOME", "C", 40, 0}, ;
+         {"CIDADE", "C", 30, 0} })
+   ENDIF
+   USE clientes NEW
+RETURN
+
+// ----------------------------
+
+PROCEDURE ListarClientes()
+   LOCAL nCount := 0
+   AbrirTabela()
+
+   CLS
+   @ 1, 5 SAY "=== LISTA DE CLIENTES ==="
+   GO TOP
+   DO WHILE !EOF()
+      nCount++
+      @ 3 + nCount, 5 SAY "Código: " + LTRIM(STR(COD)) + " | Nome: " + NOME + " | Cidade: " + CIDADE
+      SKIP
+   ENDDO
+
+   IF nCount == 0
+      ? "Nenhum cliente cadastrado."
+   ENDIF
+   USE
+   Inkey(0)
+RETURN
+
+// ----------------------------
+
+PROCEDURE IncluirCliente()
+   LOCAL nCodigo, cNome, cCidade
+   AbrirTabela()
+   APPEND BLANK
+
+   @ 3, 5 SAY "Código: " GET nCodigo PICTURE "99999"
+   @ 4, 5 SAY "Nome:   " GET cNome
+   @ 5, 5 SAY "Cidade: " GET cCidade
+   READ
+
+   REPLACE COD WITH nCodigo, ;
+           NOME WITH cNome, ;
+           CIDADE WITH cCidade
+
+   ? "Cliente incluído com sucesso!"
+   USE
+   Inkey(1)
+RETURN
+
+// ----------------------------
+
+PROCEDURE EditarCliente()
+   LOCAL nCodigo, cNome, cCidade
+
+   AbrirTabela()
+   CLS
+   @ 3, 5 SAY "Informe o código do cliente para editar: "
+   ACCEPT TO nCodigo
+   nCodigo := VAL(nCodigo)
+
+   LOCATE FOR COD == nCodigo
+   IF FOUND()
+      cNome := NOME
+      cCidade := CIDADE
+
+      @ 5, 5 SAY "Nome atual: " + NOME
+      @ 6, 5 SAY "Cidade atual: " + CIDADE
+      @ 8, 5 SAY "Novo nome: " GET cNome
+      @ 9, 5 SAY "Nova cidade: " GET cCidade
+      READ
+
+      REPLACE NOME WITH cNome, CIDADE WITH cCidade
+      ? "Cliente atualizado com sucesso!"
+   ELSE
+      ? "Cliente não encontrado!"
+   ENDIF
+
+   USE
+   Inkey(1)
+RETURN
+
+// ----------------------------
+
+PROCEDURE ExcluirCliente()
+   LOCAL nCodigo
+   AbrirTabela()
+   CLS
+   @ 3, 5 SAY "Informe o código do cliente para excluir: "
+   ACCEPT TO nCodigo
+   nCodigo := VAL(nCodigo)
+
+   LOCATE FOR COD == nCodigo
+   IF FOUND()
+      DELETE
+      ? "Cliente excluído com sucesso!"
+   ELSE
+      ? "Cliente não encontrado!"
+   ENDIF
+
+   USE
+   Inkey(1)
+RETURN
