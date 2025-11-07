@@ -10,15 +10,16 @@ LOCAL dCadastro := Date()
 LOCAL cInativo := "N"
 LOCAL lRetorno := .F.
 
-DBSelectArea("PRODUTOS")
+//DBSelectArea("PRODUTOS")
 
+ @ 03,00 CLEAR TO 22,80
  @ 02,00 SAY PadC("INCLUSAO", 80)
  @ 03,00 SAY Replicate("-", 80)
- @ 04,10 SAY "CODIGO:          " GET nCodigo  PICTURE "99999"
+ @ 04,10 SAY "CODIGO:          " GET nCodigo  PICTURE "99999"   VALID nCodigo>0
  @ 05,10 SAY "NOME:            " GET cNome    PICTURE "@!"
- @ 06,10 SAY "PRECO:           " GET nPreco    PICTURE "999.99"
- @ 07,10 SAY "CADASTRO:        " GET dCadastro
- @ 08,10 SAY "INATIVO:         " GET cInativo PICTURE "@!"
+ @ 06,10 SAY "PRECO:           " GET nPreco    PICTURE "999.99" VALID nPreco>0
+ @ 07,10 SAY "CADASTRO:        " GET dCadastro                  VALID dCadastro>=Date()
+ @ 08,10 SAY "INATIVO:         " GET cInativo PICTURE "@!S20"   VALID (cInativo$"SN")
 
  READ
 
@@ -29,40 +30,24 @@ ENDIF
 *-----------------------------------------*
 * Validações
 *-----------------------------------------*
-IF nCodigo <= 0
-   MessageBox("Código deve ser maior que zero!", "Atenção")
-   RETURN NIL
-ENDIF
 
 IF DBSEEK(nCodigo)
    MessageBox("Código já existe!", "Atenção")
    RETURN NIL
 ENDIF
 
-IF nPreco <= 0
-   MessageBox("Preço deve ser maior que zero!", "Atenção")
-   RETURN NIL
-ENDIF
-
-IF dCadastro < Date()
-   MessageBox("Data de cadastro não pode ser menor que a data atual!", "Atenção")
-   RETURN NIL
-ENDIF
-
-IF !(cInativo$"SN")
-   MessageBox("Campo INATIVO deve ser S ou N!", "Atenção")
-   RETURN NIL
-ENDIF
 
 *-----------------------------------------*
 * Grava no banco
 *-----------------------------------------*
+SELECT PRODUTOS
+
 DBAPPEND()
 REPLACE CODIGO    WITH nCodigo
 REPLACE NOME      WITH cNome
 REPLACE PRECO     WITH nPreco
 REPLACE CADASTRO  WITH dCadastro
-REPLACE INATIVO   WITH cInativo
+REPLACE INATIVO   WITH cInativo =="S"
 
 DBCOMMIT()
 
