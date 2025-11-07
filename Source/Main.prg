@@ -29,4 +29,21 @@
 
  RETURN NIL
 
+*----------------------------------*
+ FUNCTION F_CADASTRO_PRODUTOS(nModo)
+
+ IF nModo==4
+    IF LastKey()==22
+       INCLUIR()
+    // ELSEIF LastKey()==13
+     //  ALTERAR()
+   //  ELSEIF LastKey()==7
+   //    EXCLUIR()
+   //  ELSEIF LastKey()>=32 .AND. LastKey()<127
+    //   BUSCAR()
+   //  ELSEIF LASTKEY()==-1
+    //   IMPRIMIR()
+    ENDIF
+ ENDIF
+
  RETURN 2
