@@ -35,8 +35,8 @@
  IF nModo==4
     IF LastKey()==22
        INCLUIR()
-    // ELSEIF LastKey()==13
-     //  ALTERAR()
+    ELSEIF LastKey()==13
+     ALTERAR()
    //  ELSEIF LastKey()==7
    //    EXCLUIR()
    //  ELSEIF LastKey()>=32 .AND. LastKey()<127
