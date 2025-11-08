@@ -1,0 +1,92 @@
+  #INCLUDE "WINUSER.CH"
+
+*----------------*
+ FUNCTION BUSCAR()
+
+ LOCAL GetList:={}, cNome:=Space(50), cOrdem_Produtos:="", nRegistro_Produtos:=0
+
+ IF PRODUTOS->CODIGO==0
+    MessageBox(,"O arquivo está vazio.","Atenção",MB_ICONWARNING)
+    RETURN NIL
+ ENDIF
+
+ @ 12,10 CLEAR TO 15,67
+
+ @ 12,12 TO 15,67
+ @ 13,14 SAY "INFORME O NOME DO PRODUTO: "
+ @ 14,14 GET cNome PICTURE "@!"
+
+ READ
+
+ cOrdem_Produtos   :=PRODUTOS->(OrdSetFocus("NOME"))
+ nRegistro_Produtos:=PRODUTOS->(RecNo())
+
+ IF !PRODUTOS->(DBSeek(AllTrim(cNome)))
+    PRODUTOS->(DBGoTo(nRegistro_Produtos))
+    MessageBox(,"O produto não foi encontrado.","Atenção",MB_ICONWARNING)
+ ENDIF
+
+ PRODUTOS->(OrdSetFocus(cOrdem_Produtos))
+
+ RETURN NIL
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//#INCLUDE "WINUSER.CH"
+//
+//*-----------------*
+//FUNCTION BUSCAR()
+//
+//LOCAL cBusca := SPACE(30)
+//LOCAL lAchou := .F.
+//
+//SELECT PRODUTOS
+//
+//
+//IF PRODUTOS->CODIGO==0
+//    MessageBox("Não há produtos cadastrados para buscar.", "Atenção")
+//    RETURN NIL
+//ENDIF
+//
+//
+//@ 05,25 CLEAR TO 08,55
+//@ 05,30 SAY "BUSCAR PRODUTO (NOME):"
+//@ 06,30 GET cBusca PICTURE "@!"
+//
+//READ
+//
+//IF LastKey() == 27
+//    RETURN NIL
+//ENDIF
+//
+//IF DBSEEK(cBusca)
+//    lAchou := .T.
+//
+//ELSE
+//    MessageBox(,"Produto " +cBusca+"não foi encontrado!",MB_ICONWARNING)
+//
+//
+//ENDIF
+//
+//@ 05,25 CLEAR TO 08,55
+//
+//RETURN lAchou
