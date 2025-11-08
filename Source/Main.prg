@@ -39,10 +39,10 @@
      ALTERAR()
     ELSEIF LastKey()==7
       EXCLUIR()
-   //  ELSEIF LastKey()>=32 .AND. LastKey()<127
-    //   BUSCAR()
-   //  ELSEIF LASTKEY()==-1
-    //   IMPRIMIR()
+   ELSEIF LastKey()>=32 .AND. LastKey()<127
+   BUSCAR()
+   ELSEIF LASTKEY()==-1
+     IMPRIMIR()
     ENDIF
  ENDIF
 

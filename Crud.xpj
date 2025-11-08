@@ -68,6 +68,7 @@
       <File Filename="alterar.prg"/>
       <File Filename="excluir.prg"/>
       <File Filename="buscar.prg"/>
+      <File Filename="imprimir.prg"/>
    </Files>
    <Libraries>
       <Library Filename="[xHarbour]rtl.lib"/>
