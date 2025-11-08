@@ -66,6 +66,8 @@
       <File Filename="BancoDeDados.prg"/>
       <File Filename="incluir.prg"/>
       <File Filename="alterar.prg"/>
+      <File Filename="excluir.prg"/>
+      <File Filename="buscar.prg"/>
    </Files>
    <Libraries>
       <Library Filename="[xHarbour]rtl.lib"/>

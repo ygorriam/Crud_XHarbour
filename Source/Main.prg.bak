@@ -36,7 +36,7 @@
     IF LastKey()==22
        INCLUIR()
     ELSEIF LastKey()==13
-     //  ALTERAR()
+     ALTERAR()
    //  ELSEIF LastKey()==7
    //    EXCLUIR()
    //  ELSEIF LastKey()>=32 .AND. LastKey()<127

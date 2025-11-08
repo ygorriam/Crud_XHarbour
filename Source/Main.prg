@@ -37,8 +37,8 @@
        INCLUIR()
     ELSEIF LastKey()==13
      ALTERAR()
-   //  ELSEIF LastKey()==7
-   //    EXCLUIR()
+    ELSEIF LastKey()==7
+      EXCLUIR()
    //  ELSEIF LastKey()>=32 .AND. LastKey()<127
     //   BUSCAR()
    //  ELSEIF LASTKEY()==-1
